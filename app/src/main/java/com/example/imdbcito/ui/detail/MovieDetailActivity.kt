@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.example.imdbcito.R
+import com.example.imdbcito.data.models.apirest.MovieDto
 import com.example.imdbcito.databinding.ActivityMovieDetailBinding
 
 class MovieDetailActivity : AppCompatActivity() {
@@ -47,6 +50,7 @@ class MovieDetailActivity : AppCompatActivity() {
                     binding.textReleaseDate.text = match.formattedDate
                     }
                 binding.textShortDescription.text = movie.tagline ?: "Descripcion no disponible"
+                loadMoviePic(it)
                 }
         }
 
@@ -62,6 +66,20 @@ class MovieDetailActivity : AppCompatActivity() {
         viewModel.error.observe(this) { errorMsg ->
             //showErrorState(errorMsg)
             Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun loadMoviePic(movie: MovieDto) {
+        val logoUrl = movie.posterPath
+        if (!logoUrl.isNullOrEmpty()) {
+            Glide.with(this)
+                .load(logoUrl)
+                .placeholder(R.drawable.ic_movie_placeholder)
+                .error(R.drawable.ic_error_placeholder)
+                .centerInside()
+                .into(binding.moviePic)
+        } else {
+            binding.moviePic.setImageResource(R.drawable.ic_movie_placeholder)
         }
     }
 

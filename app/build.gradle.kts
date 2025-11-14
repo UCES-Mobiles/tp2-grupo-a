@@ -80,8 +80,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
-    // Glide
-    implementation(libs.glide)
+    // Glide para carga de imágenes
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
     // Testing
     testImplementation(libs.junit)
