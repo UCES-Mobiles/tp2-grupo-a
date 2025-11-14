@@ -3,9 +3,8 @@ package com.example.imdbcito.data.models.apirest
 import com.google.gson.annotations.SerializedName
 
 data class MovieDto(
-    @SerializedName("team") val movie: Movie
+    @SerializedName("movie") val movie: Movie
 )
-
 data class Movie(
     @SerializedName("original_title") val originalTitle: String?,
     @SerializedName("overview") val overview: String?,
