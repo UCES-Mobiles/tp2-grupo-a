@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.imdbcito.data.models.apirest.MovieDto
 import com.example.imdbcito.data.repository.MovieRepository
-import com.example.imdbcito.data.models.entities.movie.MovieStatsModel
+import com.example.imdbcito.data.models.entities.movie.ReleaseDateModel
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 
 class MovieDetailViewModel : ViewModel() {
 
@@ -20,14 +20,11 @@ class MovieDetailViewModel : ViewModel() {
     private val _movieName = MutableLiveData<String>()
     val movieName: LiveData<String> = _movieName
 
-    private val _statDisplay = MutableLiveData<MovieStatsModel>()
-    val statDisplay: LiveData<MovieStatsModel> = _statDisplay
+    private val _movieShortDescription = MutableLiveData<String>()
+    val movieShortDescription: LiveData<String> = _movieShortDescription
 
-    private val _location = MutableLiveData<String>()
-    val location: LiveData<String> = _location
-
-    private val _league = MutableLiveData<String>()
-    val league: LiveData<String> = _league
+    private val _releaseDate = MutableLiveData<ReleaseDateModel?>()
+    val releaseDateMatch: LiveData<ReleaseDateModel> = _releaseDate as LiveData<ReleaseDateModel>
 
     fun fetchMovie(movieId: Int) {
         repository.fetchMovie(movieId)
@@ -35,27 +32,52 @@ class MovieDetailViewModel : ViewModel() {
         repository.movie.observeForever { movie ->
             movie?.let {
                 _movieName.value = it.originalTitle ?: "Nombre no disponible"
+                _movieShortDescription.value = it.tagline ?: "Descripcion no disponible"
+                val releaseDateString = it.releaseDate
+                if (releaseDateString == null ) {
+                    _releaseDate.value = null
+                } else {
+                    val formattedDate = formatMatchDate(releaseDateString)
+                    _releaseDate.value = ReleaseDateModel(formattedDate)
+                }
+
             }
         }
 
         repository.movie.observeForever { movie ->
             movie?.let {
                 _movieName.value = it.originalTitle ?: "Nombre no disponible"
+                _movieShortDescription.value = it.tagline ?: "Descripción no disponible"
             }
         }
     }
 
-    // PARA FECHAS
+
     private fun formatMatchDate(dateString: String?): String {
-        if (dateString.isNullOrEmpty()) return "No disponible"
+        if (dateString.isNullOrEmpty()) return "Fecha lanzamiento No disponible"
+
         return try {
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'", Locale.getDefault())
-            inputFormat.timeZone = TimeZone.getTimeZone("UTC")
-            val outputFormat = SimpleDateFormat("d 'de' MMMM, yyyy", Locale("es", "ES"))
-            val date = inputFormat.parse(dateString)
-            outputFormat.format(date!!)
-        } catch (e: Exception) {
-            "Formato inválido"
+            // Admite fechas con o sin ceros
+            val possibleFormats = listOf(
+                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
+                SimpleDateFormat("yyyy-M-d", Locale.getDefault())
+            )
+
+            var date: Date? = null
+            for (format in possibleFormats) {
+                try {
+                    date = format.parse(dateString)
+                    if (date != null) break
+                } catch (_: Exception) { }
+            }
+
+            if (date == null) return "Formato fecha inválido"
+
+            val outputFormat = SimpleDateFormat("MMMM yyyy", Locale("es", "ES"))
+            outputFormat.format(date).replaceFirstChar { it.uppercase() }
+
+        } catch (_: Exception) {
+            "Formato fecha inválido"
         }
     }
 }

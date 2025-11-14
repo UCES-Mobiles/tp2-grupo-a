@@ -7,13 +7,12 @@
     android:orientation="vertical"
     tools:context=".ui.detail.MovieDetailActivity">
 
-    <!-- Header -->
-<!--    <include
+    <include
         android:id="@+id/appHeader"
         layout="@layout/header_app"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.1" />-->
+        android:layout_weight="0.1" />
 
     <!-- Content area - 90% -->
     <ScrollView
@@ -28,7 +27,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- MÓDULO 1: Información de movie -->
+            <!-- MÓDULO 1: Información de pelicula -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,7 +39,7 @@
 
                 <!-- Nombre (centrado y en negrita) -->
                 <TextView
-                    android:id="@+id/textTeamName"
+                    android:id="@+id/textMovieName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Cargando..."
@@ -48,6 +47,32 @@
                     android:textStyle="bold"
                     android:gravity="center"
                     android:layout_marginBottom="16dp" />
+
+                <!-- Miniatura de pelicula -->
+                <ImageView
+                    android:id="@+id/moviePic"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:contentDescription="Movie pic"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:id="@+id/textShortDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Descripcion: Cargando..."
+                    android:textSize="16sp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/textReleaseDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Lanzamiento: Cargando..."
+                    android:textSize="16sp"
+                    android:layout_marginBottom="8dp" />
 
             </LinearLayout>
 
