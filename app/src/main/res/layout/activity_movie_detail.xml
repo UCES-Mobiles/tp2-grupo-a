@@ -8,12 +8,12 @@
     tools:context=".ui.detail.MovieDetailActivity">
 
     <!-- Header -->
-    <include
+<!--    <include
         android:id="@+id/appHeader"
         layout="@layout/header_app"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.1" />
+        android:layout_weight="0.1" />-->
 
     <!-- Content area - 90% -->
     <ScrollView
@@ -48,106 +48,6 @@
                     android:textStyle="bold"
                     android:gravity="center"
                     android:layout_marginBottom="16dp" />
-
-                <!-- Escudo o Logo del equipo -->
-                <ImageView
-                    android:id="@+id/teamLogo"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:scaleType="centerInside"
-                    android:contentDescription="Team Logo"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/textLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Ubicación: Cargando..."
-                    android:textSize="16sp"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/textLeague"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Liga: Cargando..."
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-
-            <!-- MÓDULO 2: Estadísticas -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp"
-                android:background="@android:color/white"
-                android:elevation="4dp"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    android:id="@+id/textPosition"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Posición en la liga: Cargando..."
-                    android:textSize="16sp"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/textPoints"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Puntos: Cargando..."
-                    android:textSize="16sp"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/textGamesPlayed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Partidos Jugados: Cargando..."
-                    android:textSize="16sp"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/textWins"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Victorias: Cargando..."
-                    android:textSize="16sp"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/textLosses"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Derrotas: Cargando..."
-                    android:textSize="16sp"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/textTies"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Empates: Cargando..."
-                    android:textSize="16sp"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/textGoalsFor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Goles a favor: Cargando..."
-                    android:textSize="16sp"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/textGoalsAgainst"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Goles en contra: Cargando..."
-                    android:textSize="16sp" />
 
             </LinearLayout>
 

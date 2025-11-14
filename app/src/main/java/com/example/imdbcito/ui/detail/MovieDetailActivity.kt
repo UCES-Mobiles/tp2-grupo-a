@@ -7,11 +7,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.imdbcito.databinding.ActivityMovieDetailBinding
 
 class MovieDetailActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMovieDetailBinding
-
     private lateinit var viewModel: MovieDetailViewModel
-
     private var movieId: Int = 0
     private var movieName: String = ""
 
@@ -35,7 +32,7 @@ class MovieDetailActivity : AppCompatActivity() {
     private fun setupUI() {
         // Setup action bar with team name
         supportActionBar?.title = movieName
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun observeViewModel() {
@@ -46,20 +43,10 @@ class MovieDetailActivity : AppCompatActivity() {
                 }
         }
 
-        viewModel.statDisplay.observe(this) { stats ->
-            binding.textGamesPlayed.text = "Partidos Jugados: ${stats.gamesPlayed}"
-        }
-
         viewModel.error.observe(this) { errorMsg ->
-            showErrorState(errorMsg)
+            //showErrorState(errorMsg)
             Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
         }
     }
-
-    private fun showErrorState(message: String) {
-        binding.textLocation.text = "Error: $message"
-        binding.textLeague.text = "Por favor, intenta más tarde"
-    }
-
 
 }

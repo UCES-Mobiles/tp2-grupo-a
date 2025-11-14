@@ -29,6 +29,12 @@ android {
             "BASE_DOMAIN",
             "\"${localProps["BASE_DOMAIN"]}\""
         )
+
+        buildConfigField(
+            "String",
+            "API_TOKEN",
+            "\"${localProps["API_TOKEN"]}\""
+        )
     }
 
     buildTypes {
