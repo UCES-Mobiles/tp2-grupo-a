@@ -1,1 +1,16 @@
 /build
+
+# Local configuration
+local.properties
+
+# IDEA
+/.idea/workspace.xml
+/.idea/tasks.xml
+/.idea/dictionaries
+/.idea/libraries
+/.idea/modules.xml
+/.idea/*.iml
+/.idea/caches/
+/.idea/compiler.xml
+/.idea/stash/
+.idea/*
