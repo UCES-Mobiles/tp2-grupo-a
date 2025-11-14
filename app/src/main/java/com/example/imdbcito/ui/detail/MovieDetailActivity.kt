@@ -51,6 +51,17 @@ class MovieDetailActivity : AppCompatActivity() {
                     }
                 binding.textShortDescription.text = movie.tagline ?: "Descripcion no disponible"
                 loadMoviePic(it)
+
+                viewModel.isFavorite.observe(this) { isFav ->
+                    val drawable = if (isFav) R.drawable.ic_star_filled else R.drawable.ic_star_outline
+                    binding.btnFavorites.setImageResource(drawable)
+                }
+
+                binding.btnFavorites.setOnClickListener {
+                    viewModel.movie.value?.let { movie ->
+                        viewModel.toggleFavorite(movie)
+                    }
+                }
                 }
         }
 
@@ -82,7 +93,4 @@ class MovieDetailActivity : AppCompatActivity() {
             binding.moviePic.setImageResource(R.drawable.ic_movie_placeholder)
         }
     }
-
-
-
 }

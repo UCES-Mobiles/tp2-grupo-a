@@ -1,22 +1,25 @@
 package com.example.imdbcito.ui.detail
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.imdbcito.data.models.apirest.MovieDto
+import com.example.imdbcito.data.models.entities.movie.FavoriteMovieModel
 import com.example.imdbcito.data.repository.MovieRepository
 import com.example.imdbcito.data.models.entities.movie.ReleaseDateModel
+import com.example.imdbcito.data.repository.FavoriteMovieRepository
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class MovieDetailViewModel : ViewModel() {
-
+class MovieDetailViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = MovieRepository()
+    private val favoriteRepository = FavoriteMovieRepository(application)
 
     val movie: LiveData<MovieDto> = repository.movie
     val error: LiveData<String> = repository.error
-
     private val _movieName = MutableLiveData<String>()
     val movieName: LiveData<String> = _movieName
 
@@ -26,6 +29,8 @@ class MovieDetailViewModel : ViewModel() {
     private val _releaseDate = MutableLiveData<ReleaseDateModel?>()
     val releaseDateMatch: LiveData<ReleaseDateModel> = _releaseDate as LiveData<ReleaseDateModel>
 
+    private val _isFavorite = MutableLiveData<Boolean>()
+    val isFavorite: LiveData<Boolean> = _isFavorite
     fun fetchMovie(movieId: Int) {
         repository.fetchMovie(movieId)
 
@@ -40,6 +45,8 @@ class MovieDetailViewModel : ViewModel() {
                     val formattedDate = formatMatchDate(releaseDateString)
                     _releaseDate.value = ReleaseDateModel(formattedDate)
                 }
+                // Cargar estado de favoritos
+                _isFavorite.value = favoriteRepository.isFavorite(it.id)
 
             }
         }
@@ -49,6 +56,24 @@ class MovieDetailViewModel : ViewModel() {
                 _movieName.value = it.originalTitle ?: "Nombre no disponible"
                 _movieShortDescription.value = it.tagline ?: "Descripción no disponible"
             }
+        }
+    }
+
+    fun toggleFavorite(movie: MovieDto) {
+        if (_isFavorite.value == true) {
+            // Quitar de favoritos
+            val fav = favoriteRepository.getFavorites().firstOrNull { it.movieId == movie.id }
+            fav?.let { favoriteRepository.removeFavorite(it.id) }
+            _isFavorite.value = false
+        } else {
+            // Agregar a favoritos
+            favoriteRepository.addFavorite(
+                FavoriteMovieModel(
+                    movieId = movie.id,
+                    title = movie.originalTitle ?: ""
+                )
+            )
+            _isFavorite.value = true
         }
     }
 

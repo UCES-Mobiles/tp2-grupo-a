@@ -74,6 +74,15 @@
                     android:textSize="16sp"
                     android:layout_marginBottom="8dp" />
 
+                <!-- Botón Favoritos -->
+                <ImageButton
+                    android:id="@+id/btnFavorites"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_star_outline"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/favorites" />
+
             </LinearLayout>
 
         </LinearLayout>

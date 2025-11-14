@@ -14,13 +14,6 @@
         android:src="@drawable/ic_launcher_foreground"
         android:layout_weight="1" />
 
-    <!-- Botón Favoritos -->
-    <ImageButton
-        android:id="@+id/btnFavorites"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@android:drawable/btn_star_big_on"
-        android:background="?attr/selectableItemBackground"
-        android:contentDescription="@string/favorites" />
+
 
 </LinearLayout>
