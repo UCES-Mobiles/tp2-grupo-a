@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Para ejecutar movieDetailActivity para pruebas
+        // Se harcodea pelicula para probar Activity de Movie
         val intent = Intent(this, MovieDetailActivity::class.java).apply {
             putExtra("MOVIE_ID", 640146)
         }
