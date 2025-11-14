@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">IMDBcito</string>
+    <string name="app_name">Imdbcito</string>
+    <string name="favorites">Favoritos</string>
 </resources>
