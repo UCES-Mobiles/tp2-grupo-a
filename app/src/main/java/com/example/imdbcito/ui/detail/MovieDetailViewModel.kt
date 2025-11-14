@@ -3,7 +3,7 @@ package com.example.imdbcito.ui.detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.imdbcito.data.models.apirest.Movie
+import com.example.imdbcito.data.models.apirest.MovieDto
 import com.example.imdbcito.data.repository.MovieRepository
 import com.example.imdbcito.data.models.entities.movie.MovieStatsModel
 import java.text.SimpleDateFormat
@@ -14,7 +14,7 @@ class MovieDetailViewModel : ViewModel() {
 
     private val repository = MovieRepository()
 
-    val movie: LiveData<Movie> = repository.movie
+    val movie: LiveData<MovieDto> = repository.movie
     val error: LiveData<String> = repository.error
 
     private val _movieName = MutableLiveData<String>()
@@ -22,9 +22,6 @@ class MovieDetailViewModel : ViewModel() {
 
     private val _statDisplay = MutableLiveData<MovieStatsModel>()
     val statDisplay: LiveData<MovieStatsModel> = _statDisplay
-
-/*    private val _nextMatchDisplay = MutableLiveData<NextMatchModel?>()
-    val nextMatchDisplay: LiveData<NextMatchModel> = _nextMatchDisplay as LiveData<NextMatchModel>*/
 
     private val _location = MutableLiveData<String>()
     val location: LiveData<String> = _location
@@ -34,6 +31,12 @@ class MovieDetailViewModel : ViewModel() {
 
     fun fetchMovie(movieId: Int) {
         repository.fetchMovie(movieId)
+
+        repository.movie.observeForever { movie ->
+            movie?.let {
+                _movieName.value = it.originalTitle ?: "Nombre no disponible"
+            }
+        }
 
         repository.movie.observeForever { movie ->
             movie?.let {
