@@ -26,7 +26,8 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private fun getIntentData() {
         movieId = intent.getIntExtra("MOVIE_ID", 0)
-        binding.textTeamName.text = movieName
+        binding.textMovieName.text = movieName
+        binding.textReleaseDate.text = movieName
     }
 
     private fun setupUI() {
@@ -39,8 +40,23 @@ class MovieDetailActivity : AppCompatActivity() {
         viewModel.movie.observe(this) { movie ->
             movie?.let {
                 // MÓDULO 1: Información Básica
-                binding.textTeamName.text = movie.originalTitle ?: movieName
+                //Nombre de pelicula
+                binding.textMovieName.text = movie.originalTitle ?: movieName
+                //Fecha de lanzamiento
+                viewModel.releaseDateMatch.observe(this) { match ->
+                    binding.textReleaseDate.text = match.formattedDate
+                    }
+                binding.textShortDescription.text = movie.tagline ?: "Descripcion no disponible"
                 }
+        }
+
+        viewModel.movieName.observe(this) { name ->
+            binding.textMovieName.text = name
+            supportActionBar?.title = name
+        }
+
+        viewModel.movieShortDescription.observe(this) { description ->
+            binding.textShortDescription.text = description
         }
 
         viewModel.error.observe(this) { errorMsg ->
@@ -48,5 +64,7 @@ class MovieDetailActivity : AppCompatActivity() {
             Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
         }
     }
+
+
 
 }

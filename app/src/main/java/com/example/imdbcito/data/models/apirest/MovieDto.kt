@@ -8,4 +8,5 @@ data class MovieDto(
     @SerializedName("poster_path") val posterPath: String?,
     @SerializedName("release_date") val releaseDate: String?,
     @SerializedName("original_language") val originalLanguage: String?,
+    @SerializedName("tagline") val tagline: String?
 )
