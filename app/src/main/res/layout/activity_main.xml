@@ -7,25 +7,45 @@
     android:orientation="vertical"
     tools:context=".ui.main.MainActivity">
 
-    <!-- Header -->
-    <include
-        android:id="@+id/appHeader"
-        layout="@layout/header_app"
+    <!-- Header estilo IMDB (negro con amarillo) - SOLO ESTE HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/imdb_dark"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="IMDbCito"
+            android:textColor="@color/imdb_gold"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <!-- Contenedor de fragments -->
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.1" />
+        android:layout_weight="1" />
 
-    <!-- Content area - 90% of screen height -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.9">
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="wrap_content"
+        android:background="@color/imdb_dark"
+        app:itemIconTint="@drawable/bottom_nav_icon_colors"
+        app:itemTextColor="@drawable/bottom_nav_icon_colors"
+        app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>

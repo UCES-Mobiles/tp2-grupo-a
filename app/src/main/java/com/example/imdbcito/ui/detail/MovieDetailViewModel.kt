@@ -4,12 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.imdbcito.data.models.apirest.MovieDto
 import com.example.imdbcito.data.models.entities.movie.FavoriteMovieModel
-import com.example.imdbcito.data.repository.MovieRepository
 import com.example.imdbcito.data.models.entities.movie.ReleaseDateModel
+import com.example.imdbcito.data.repository.MovieRepository
 import com.example.imdbcito.data.repository.FavoriteMovieRepository
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -18,91 +19,76 @@ class MovieDetailViewModel(application: Application) : AndroidViewModel(applicat
     private val repository = MovieRepository()
     private val favoriteRepository = FavoriteMovieRepository(application)
 
-    val movie: LiveData<MovieDto> = repository.movie
-    val error: LiveData<String> = repository.error
-    private val _movieName = MutableLiveData<String>()
-    val movieName: LiveData<String> = _movieName
+    private val _movie = MutableLiveData<MovieDto?>()
+    val movie: LiveData<MovieDto?> = _movie
 
-    private val _movieShortDescription = MutableLiveData<String>()
-    val movieShortDescription: LiveData<String> = _movieShortDescription
-
-    private val _releaseDate = MutableLiveData<ReleaseDateModel?>()
-    val releaseDateMatch: LiveData<ReleaseDateModel> = _releaseDate as LiveData<ReleaseDateModel>
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
 
     private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite: LiveData<Boolean> = _isFavorite
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _releaseDate = MutableLiveData<ReleaseDateModel?>()
+    val releaseDateMatch: LiveData<ReleaseDateModel?> = _releaseDate
+
     fun fetchMovie(movieId: Int) {
-        repository.fetchMovie(movieId)
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
 
-        repository.movie.observeForever { movie ->
-            movie?.let {
-                _movieName.value = it.originalTitle ?: "Nombre no disponible"
-                _movieShortDescription.value = it.tagline ?: "Descripcion no disponible"
-                val releaseDateString = it.releaseDate
-                if (releaseDateString == null ) {
-                    _releaseDate.value = null
-                } else {
-                    val formattedDate = formatMatchDate(releaseDateString)
+            val result = repository.getMovieById(movieId)
+            if (result.isSuccess) {
+                val movieData = result.getOrNull()
+                _movie.value = movieData
+
+                // Procesar fecha de lanzamiento
+                movieData?.releaseDate?.let { dateString ->
+                    val formattedDate = formatMatchDate(dateString)
                     _releaseDate.value = ReleaseDateModel(formattedDate)
+                } ?: run {
+                    _releaseDate.value = null
                 }
+
                 // Cargar estado de favoritos
-                _isFavorite.value = favoriteRepository.isFavorite(it.id)
-
+                _isFavorite.value = favoriteRepository.isFavorite(movieId)
+            } else {
+                _error.value = result.exceptionOrNull()?.message ?: "Error al cargar la película"
             }
-        }
-
-        repository.movie.observeForever { movie ->
-            movie?.let {
-                _movieName.value = it.originalTitle ?: "Nombre no disponible"
-                _movieShortDescription.value = it.tagline ?: "Descripción no disponible"
-            }
+            _isLoading.value = false
         }
     }
 
     fun toggleFavorite(movie: MovieDto) {
-        if (_isFavorite.value == true) {
-            // Quitar de favoritos
-            val fav = favoriteRepository.getFavorites().firstOrNull { it.movieId == movie.id }
-            fav?.let { favoriteRepository.removeFavorite(it.id) }
-            _isFavorite.value = false
-        } else {
-            // Agregar a favoritos
-            favoriteRepository.addFavorite(
-                FavoriteMovieModel(
-                    movieId = movie.id,
-                    title = movie.originalTitle ?: ""
+        viewModelScope.launch {
+            if (_isFavorite.value == true) {
+                // Quitar de favoritos
+                val fav = favoriteRepository.getFavorites().firstOrNull { it.movieId == movie.id }
+                fav?.let { favoriteRepository.removeFavorite(it.id) }
+                _isFavorite.value = false
+            } else {
+                // Agregar a favoritos
+                favoriteRepository.addFavorite(
+                    FavoriteMovieModel(
+                        movieId = movie.id,
+                        title = movie.originalTitle ?: movie.title ?: ""
+                    )
                 )
-            )
-            _isFavorite.value = true
+                _isFavorite.value = true
+            }
         }
     }
 
-
-    private fun formatMatchDate(dateString: String?): String {
-        if (dateString.isNullOrEmpty()) return "Fecha lanzamiento No disponible"
-
+    private fun formatMatchDate(dateString: String): String {
         return try {
-            // Admite fechas con o sin ceros
-            val possibleFormats = listOf(
-                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
-                SimpleDateFormat("yyyy-M-d", Locale.getDefault())
-            )
-
-            var date: Date? = null
-            for (format in possibleFormats) {
-                try {
-                    date = format.parse(dateString)
-                    if (date != null) break
-                } catch (_: Exception) { }
-            }
-
-            if (date == null) return "Formato fecha inválido"
-
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val date = inputFormat.parse(dateString)
             val outputFormat = SimpleDateFormat("MMMM yyyy", Locale("es", "ES"))
-            outputFormat.format(date).replaceFirstChar { it.uppercase() }
-
-        } catch (_: Exception) {
-            "Formato fecha inválido"
+            outputFormat.format(date!!).replaceFirstChar { it.uppercase() }
+        } catch (e: Exception) {
+            "Fecha no disponible"
         }
     }
 }

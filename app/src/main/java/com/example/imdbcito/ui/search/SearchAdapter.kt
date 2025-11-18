@@ -1,4 +1,4 @@
-package com.example.imdbcito.ui.home
+package com.example.imdbcito.ui.search
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,31 +12,35 @@ import com.bumptech.glide.Glide
 import com.example.imdbcito.R
 import com.example.imdbcito.data.models.entities.movie.MovieModel
 
-class MovieAdapter(private val onItemClick: (MovieModel) -> Unit) :
-    ListAdapter<MovieModel, MovieAdapter.MovieViewHolder>(MovieDiffCallback) {
+class SearchAdapter(private val onItemClick: (MovieModel) -> Unit) :
+    ListAdapter<MovieModel, SearchAdapter.SearchViewHolder>(SearchDiffCallback) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_movie, parent, false)
-        return MovieViewHolder(view)
+            .inflate(R.layout.item_search_result, parent, false)
+        return SearchViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         val movie = getItem(position)
         holder.bind(movie)
         holder.itemView.setOnClickListener { onItemClick(movie) }
     }
 
-    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val posterImage: ImageView = itemView.findViewById(R.id.moviePoster)
         private val titleText: TextView = itemView.findViewById(R.id.movieTitle)
+        private val overviewText: TextView = itemView.findViewById(R.id.movieOverview)
         private val ratingText: TextView = itemView.findViewById(R.id.movieRating)
+        private val releaseDateText: TextView = itemView.findViewById(R.id.movieReleaseDate)
 
         fun bind(movie: MovieModel) {
             titleText.text = movie.title
+            overviewText.text = movie.overview ?: "Descripción no disponible"
             ratingText.text = "⭐ ${String.format("%.1f", movie.voteAverage ?: 0.0)}"
+            releaseDateText.text = movie.releaseDate ?: "Fecha no disponible"
 
-            // Cargar imagen con Glide
+            // Cargar imagen
             val posterUrl = if (!movie.posterPath.isNullOrEmpty()) {
                 "https://image.tmdb.org/t/p/w500${movie.posterPath}"
             } else {
@@ -55,7 +59,7 @@ class MovieAdapter(private val onItemClick: (MovieModel) -> Unit) :
         }
     }
 
-    companion object MovieDiffCallback : DiffUtil.ItemCallback<MovieModel>() {
+    companion object SearchDiffCallback : DiffUtil.ItemCallback<MovieModel>() {
         override fun areItemsTheSame(oldItem: MovieModel, newItem: MovieModel): Boolean {
             return oldItem.id == newItem.id
         }

@@ -1,12 +1,12 @@
-package com.example.imdbcito.data.network.common.RetrofitFactory
+package com.example.imdbcito.data.network.common
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
 object RetrofitFactory {
 
-    fun <T> createService(baseUrl: String, token: String? = null,serviceClass: Class<T>): T {
-
+    fun <T> createService(baseUrl: String, token: String? = null, serviceClass: Class<T>): T {
         val httpClientBuilder = OkHttpClient.Builder()
 
         // Si hay token, agregar interceptor para el header
@@ -14,6 +14,7 @@ object RetrofitFactory {
             httpClientBuilder.addInterceptor { chain ->
                 val request = chain.request().newBuilder()
                     .addHeader("Authorization", "Bearer $token")
+                    .addHeader("Accept", "application/json")
                     .build()
                 chain.proceed(request)
             }
@@ -24,7 +25,7 @@ object RetrofitFactory {
             .client(httpClientBuilder.build())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
         return retrofit.create(serviceClass)
     }
 }
-
