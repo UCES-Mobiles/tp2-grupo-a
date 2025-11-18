@@ -27,13 +27,13 @@ android {
         buildConfigField(
             "String",
             "BASE_DOMAIN",
-            "\"${localProps["BASE_DOMAIN"]}\""
+            "\"${localProps.getProperty("BASE_DOMAIN", "")}\""
         )
 
         buildConfigField(
             "String",
             "API_TOKEN",
-            "\"${localProps["API_TOKEN"]}\""
+            "\"${localProps.getProperty("API_TOKEN", "")}\""
         )
     }
 
@@ -75,6 +75,9 @@ dependencies {
     // Lifecycle & ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 
     // Retrofit
     implementation(libs.retrofit)
@@ -82,6 +85,15 @@ dependencies {
 
     // Glide para carga de imágenes
     implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // CardView
+    implementation("androidx.cardview:cardview:1.0.0")
+
+    // RecyclerView
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 
     // Testing
     testImplementation(libs.junit)

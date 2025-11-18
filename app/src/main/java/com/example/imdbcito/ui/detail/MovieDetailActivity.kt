@@ -13,7 +13,6 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMovieDetailBinding
     private lateinit var viewModel: MovieDetailViewModel
     private var movieId: Int = 0
-    private var movieName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,62 +28,74 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private fun getIntentData() {
         movieId = intent.getIntExtra("MOVIE_ID", 0)
-        binding.textMovieName.text = movieName
-        binding.textReleaseDate.text = movieName
+        // Mostrar "Cargando..." temporalmente
+        binding.textMovieName.text = "Cargando..."
+        binding.textReleaseDate.text = "Cargando..."
+        binding.textShortDescription.text = "Cargando..."
     }
 
     private fun setupUI() {
-        // Setup action bar with team name
-        supportActionBar?.title = movieName
-        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun observeViewModel() {
         viewModel.movie.observe(this) { movie ->
             movie?.let {
                 // MÓDULO 1: Información Básica
-                //Nombre de pelicula
-                binding.textMovieName.text = movie.originalTitle ?: movieName
-                //Fecha de lanzamiento
-                viewModel.releaseDateMatch.observe(this) { match ->
-                    binding.textReleaseDate.text = match.formattedDate
-                    }
-                binding.textShortDescription.text = movie.tagline ?: "Descripcion no disponible"
+                // Nombre de película
+                binding.textMovieName.text = movie.originalTitle ?: movie.title ?: "Nombre no disponible"
+
+                // Descripción corta
+                binding.textShortDescription.text = movie.tagline ?: "Descripción no disponible"
+
+                // Cargar imagen
                 loadMoviePic(it)
 
-                viewModel.isFavorite.observe(this) { isFav ->
-                    val drawable = if (isFav) R.drawable.ic_star_filled else R.drawable.ic_star_outline
-                    binding.btnFavorites.setImageResource(drawable)
-                }
+                // Actualizar action bar
+                supportActionBar?.title = movie.originalTitle ?: movie.title ?: "Detalle"
 
+                // Configurar botón favoritos
                 binding.btnFavorites.setOnClickListener {
-                    viewModel.movie.value?.let { movie ->
-                        viewModel.toggleFavorite(movie)
-                    }
+                    viewModel.toggleFavorite(movie)
                 }
-                }
+            }
         }
 
-        viewModel.movieName.observe(this) { name ->
-            binding.textMovieName.text = name
-            supportActionBar?.title = name
+        // Observar fecha de lanzamiento (puede ser null)
+        viewModel.releaseDateMatch.observe(this) { match ->
+            binding.textReleaseDate.text = match?.formattedDate ?: "Fecha no disponible"
         }
 
-        viewModel.movieShortDescription.observe(this) { description ->
-            binding.textShortDescription.text = description
+        // Observar estado de favoritos
+        viewModel.isFavorite.observe(this) { isFav ->
+            val drawable = if (isFav) R.drawable.ic_star_filled else R.drawable.ic_star_outline
+            binding.btnFavorites.setImageResource(drawable)
         }
 
+        // Observar errores
         viewModel.error.observe(this) { errorMsg ->
-            //showErrorState(errorMsg)
-            Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+            if (!errorMsg.isNullOrEmpty()) {
+                Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+            }
+        }
+
+        // Observar loading
+        viewModel.isLoading.observe(this) { isLoading ->
+            if (isLoading) {
+                binding.textMovieName.text = "Cargando..."
+                binding.textReleaseDate.text = "Cargando..."
+                binding.textShortDescription.text = "Cargando..."
+            }
         }
     }
 
     private fun loadMoviePic(movie: MovieDto) {
-        val logoUrl = movie.posterPath
-        if (!logoUrl.isNullOrEmpty()) {
+        val posterUrl = movie.posterPath
+        if (!posterUrl.isNullOrEmpty()) {
+            // Construir URL completa para TMDB
+            val fullPosterUrl = "https://image.tmdb.org/t/p/w500$posterUrl"
             Glide.with(this)
-                .load(logoUrl)
+                .load(fullPosterUrl)
                 .placeholder(R.drawable.ic_movie_placeholder)
                 .error(R.drawable.ic_error_placeholder)
                 .centerInside()
@@ -92,5 +103,10 @@ class MovieDetailActivity : AppCompatActivity() {
         } else {
             binding.moviePic.setImageResource(R.drawable.ic_movie_placeholder)
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 }

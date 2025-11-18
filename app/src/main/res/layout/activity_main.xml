@@ -12,20 +12,13 @@
         android:id="@+id/appHeader"
         layout="@layout/header_app"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.1" />
+        android:layout_height="wrap_content" />
 
-    <!-- Content area - 90% of screen height -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Content area - Cambiar ViewPager2 por FrameLayout -->
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.9">
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_weight="1" />
 
 </LinearLayout>

@@ -1,28 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permisos -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+        tools:targetApi="31">
 
+        <!-- Main Activity -->
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true"
-            android:label="@string/app_name">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- Movie Detail Activity -->
         <activity
             android:name=".ui.detail.MovieDetailActivity"
-            android:exported="false"
-            android:label="Detalle de Movie" />
+            android:exported="false" />
+
+        <!-- Favorites Activity -->
+        <activity
+            android:name=".ui.favorites.FavoritesActivity"
+            android:exported="false" />
+
+        <!-- Results Activity -->
+        <activity
+            android:name=".ui.results.ResultsActivity"
+            android:exported="false" />
 
     </application>
 

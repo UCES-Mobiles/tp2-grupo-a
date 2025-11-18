@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Imdbcito</string>
     <string name="favorites">Favoritos</string>
+    <string name="poster_pelicula">Poster de la película</string>
+    <string name="error_cargando">Error al cargar</string>
+    <string name="cargando">Cargando...</string>
 </resources>
