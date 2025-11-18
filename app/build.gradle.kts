@@ -1,6 +1,15 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+}
+
+val localProps = Properties()
+val localPropsFile = rootProject.file("local.properties")
+if (localPropsFile.exists()) {
+    localProps.load(FileInputStream(localPropsFile))
 }
 
 android {
@@ -15,6 +24,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField(
+            "String",
+            "BASE_DOMAIN",
+            "\"${localProps["BASE_DOMAIN"]}\""
+        )
+
+        buildConfigField(
+            "String",
+            "API_TOKEN",
+            "\"${localProps["API_TOKEN"]}\""
+        )
     }
 
     buildTypes {
@@ -38,6 +58,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -59,8 +80,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
-    // Glide
-    implementation(libs.glide)
+    // Glide para carga de imágenes
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
     // Testing
     testImplementation(libs.junit)

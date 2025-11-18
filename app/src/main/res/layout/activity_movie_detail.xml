@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.detail.MovieDetailActivity">
+
+    <include
+        android:id="@+id/appHeader"
+        layout="@layout/header_app"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1" />
+
+    <!-- Content area - 90% -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.9"
+        android:padding="16dp"
+        android:background="#f5f5f5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- MÓDULO 1: Información de pelicula -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@android:color/white"
+                android:elevation="4dp"
+                android:layout_marginBottom="16dp">
+
+                <!-- Nombre (centrado y en negrita) -->
+                <TextView
+                    android:id="@+id/textMovieName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cargando..."
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Miniatura de pelicula -->
+                <ImageView
+                    android:id="@+id/moviePic"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:contentDescription="Movie pic"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:id="@+id/textShortDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Descripcion: Cargando..."
+                    android:textSize="16sp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/textReleaseDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Lanzamiento: Cargando..."
+                    android:textSize="16sp"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Botón Favoritos -->
+                <ImageButton
+                    android:id="@+id/btnFavorites"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_star_outline"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/favorites" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
+
