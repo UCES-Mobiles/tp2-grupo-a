@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.imdbcito.databinding.FragmentHomeBinding
 import com.example.imdbcito.ui.detail.MovieDetailActivity
 
@@ -41,7 +42,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(HomeViewModel::class.java)
     }
 
     private fun setupRecyclerView() {
@@ -54,8 +55,26 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.recyclerViewMovies.layoutManager = GridLayoutManager(requireContext(), 2)
+        val layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerViewMovies.layoutManager = layoutManager
         binding.recyclerViewMovies.adapter = adapter
+
+        // Agregar scroll listener para paginación infinita
+        binding.recyclerViewMovies.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                if (viewModel.canLoadMore() &&
+                    (visibleItemCount + firstVisibleItemPosition) >= totalItemCount &&
+                    firstVisibleItemPosition >= 0) {
+                    viewModel.loadNextPage()
+                }
+            }
+        })
     }
 
     private fun setupSpinner() {
@@ -96,10 +115,6 @@ class HomeFragment : Fragment() {
             if (!error.isNullOrEmpty()) {
                 android.widget.Toast.makeText(requireContext(), error, android.widget.Toast.LENGTH_LONG).show()
             }
-        }
-
-        viewModel.currentCategory.observe(viewLifecycleOwner) { category ->
-            activity?.title = "IMDbCito - $category"
         }
     }
 

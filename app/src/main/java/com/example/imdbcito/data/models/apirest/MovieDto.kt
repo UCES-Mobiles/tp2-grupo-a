@@ -17,7 +17,8 @@ data class MovieDto(
     @SerializedName("tagline") val tagline: String?,
     @SerializedName("runtime") val runtime: Int?,
     @SerializedName("genres") val genres: List<GenreDto>?,
-    @SerializedName("genre_ids") val genreIds: List<Int>?
+    @SerializedName("genre_ids") val genreIds: List<Int>?,
+    @SerializedName("media_type") val mediaType: String? // NUEVO: para known_for
 )
 
 data class GenreDto(
@@ -28,6 +29,22 @@ data class GenreDto(
 data class MoviesResponseDto(
     @SerializedName("page") val page: Int,
     @SerializedName("results") val results: List<MovieDto>,
+    @SerializedName("total_pages") val totalPages: Int,
+    @SerializedName("total_results") val totalResults: Int
+)
+
+// Modelo para búsqueda de personas (actores)
+data class PersonDto(
+    @SerializedName("id") val id: Int,
+    @SerializedName("name") val name: String,
+    @SerializedName("known_for_department") val knownForDepartment: String?,
+    @SerializedName("profile_path") val profilePath: String?,
+    @SerializedName("known_for") val knownFor: List<MovieDto>? // NUEVO: películas conocidas
+)
+
+data class PeopleResponseDto(
+    @SerializedName("page") val page: Int,
+    @SerializedName("results") val results: List<PersonDto>, // CORREGIDO: faltaba "results"
     @SerializedName("total_pages") val totalPages: Int,
     @SerializedName("total_results") val totalResults: Int
 )

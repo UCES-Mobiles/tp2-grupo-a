@@ -7,18 +7,45 @@
     android:orientation="vertical"
     tools:context=".ui.main.MainActivity">
 
-    <!-- Header -->
-    <include
-        android:id="@+id/appHeader"
-        layout="@layout/header_app"
+    <!-- Header estilo IMDB (negro con amarillo) - SOLO ESTE HEADER -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@color/imdb_dark"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-    <!-- Content area - Cambiar ViewPager2 por FrameLayout -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="IMDbCito"
+            android:textColor="@color/imdb_gold"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <!-- Contenedor de fragments -->
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/imdb_dark"
+        app:itemIconTint="@drawable/bottom_nav_icon_colors"
+        app:itemTextColor="@drawable/bottom_nav_icon_colors"
+        app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>

@@ -7,18 +7,10 @@
     android:orientation="vertical"
     tools:context=".ui.detail.MovieDetailActivity">
 
-    <include
-        android:id="@+id/appHeader"
-        layout="@layout/header_app"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.1" />
-
-    <!-- Content area - 90% -->
+    <!-- Content area -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.9"
+        android:layout_height="match_parent"
         android:padding="16dp"
         android:background="#f5f5f5">
 
@@ -90,4 +82,3 @@
     </ScrollView>
 
 </LinearLayout>
-

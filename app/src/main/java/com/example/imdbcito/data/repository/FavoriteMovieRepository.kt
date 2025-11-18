@@ -24,4 +24,3 @@ class FavoriteMovieRepository(context: Context) {
         return dbHelper.isFavorite(movieId)
     }
 }
-

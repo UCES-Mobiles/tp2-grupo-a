@@ -95,6 +95,10 @@ dependencies {
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 
+    // Material Design (para Bottom Navigation)
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("androidx.compose.material3:material3:1.1.2")
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

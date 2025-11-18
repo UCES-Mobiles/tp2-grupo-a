@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 class HomeViewModel : ViewModel() {
 
     private val repository = MovieRepository()
+    private var currentPage = 1
+    private var isLoadingPage = false
 
     private val _movies = MutableLiveData<List<MovieModel>>()
     val movies: LiveData<List<MovieModel>> = _movies
@@ -24,42 +26,77 @@ class HomeViewModel : ViewModel() {
     private val _currentCategory = MutableLiveData<String>()
     val currentCategory: LiveData<String> = _currentCategory
 
+    private var currentApiCall: (suspend (Int) -> Result<List<MovieModel>>)? = null
+
     fun loadPopularMovies() {
+        currentPage = 1
         _currentCategory.value = "Populares"
-        loadMovies { repository.getPopularMovies() }
+        currentApiCall = { page -> repository.getPopularMovies(page) }
+        loadMovies()
     }
 
     fun loadTopRatedMovies() {
+        currentPage = 1
         _currentCategory.value = "Mejor Rankeadas"
-        loadMovies { repository.getTopRatedMovies() }
+        currentApiCall = { page -> repository.getTopRatedMovies(page) }
+        loadMovies()
     }
 
     fun loadUpcomingMovies() {
+        currentPage = 1
         _currentCategory.value = "Próximos Estrenos"
-        loadMovies { repository.getUpcomingMovies() }
+        currentApiCall = { page -> repository.getUpcomingMovies(page) }
+        loadMovies()
     }
 
-    private fun loadMovies(apiCall: suspend () -> Result<List<MovieModel>>) {
+    fun loadNextPage() {
+        if (!isLoadingPage && currentApiCall != null) {
+            currentPage++
+            loadMovies(true)
+        }
+    }
+
+    private fun loadMovies(isLoadingMore: Boolean = false) {
+        if (isLoadingPage) return
+
         viewModelScope.launch {
-            _isLoading.value = true
+            isLoadingPage = true
+            if (!isLoadingMore) {
+                _isLoading.value = true
+            }
             _error.value = null
 
-            val result = apiCall()
-            if (result.isSuccess) {
-                val movieList = result.getOrNull() ?: emptyList()
-                _movies.value = movieList
+            val apiCall = currentApiCall ?: return@launch
 
-                if (movieList.isEmpty()) {
-                    _error.value = "No se encontraron películas"
+            val result = apiCall(currentPage)
+            if (result.isSuccess) {
+                val newMovies = result.getOrNull() ?: emptyList()
+                if (isLoadingMore) {
+                    // Agregar a la lista existente
+                    val currentMovies = _movies.value ?: emptyList()
+                    _movies.value = currentMovies + newMovies
+                } else {
+                    // Reemplazar la lista
+                    _movies.value = newMovies
+                }
+
+                if (newMovies.isEmpty() && currentPage > 1) {
+                    _error.value = "No hay más películas para cargar"
+                    currentPage-- // Revertir el incremento
                 }
             } else {
                 _error.value = result.exceptionOrNull()?.message ?: "Error desconocido"
-                // Mantener películas anteriores si hay error
-                if (_movies.value.isNullOrEmpty()) {
-                    _movies.value = emptyList()
+                if (isLoadingMore) {
+                    currentPage-- // Revertir el incremento en caso de error
                 }
             }
+
             _isLoading.value = false
+            isLoadingPage = false
         }
+    }
+
+    fun canLoadMore(): Boolean {
+        return !isLoadingPage && currentApiCall != null
     }
 }
