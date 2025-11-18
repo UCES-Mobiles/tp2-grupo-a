@@ -16,17 +16,21 @@ class FavoriteMovieDbHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "favorites.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
         const val TABLE_FAVORITES = "favorites"
         const val COLUMN_ID = "id"
         const val COLUMN_MOVIE_ID = "movie_id"
         const val COLUMN_TITLE = "title"
+        const val COLUMN_POSTER_PATH = "poster_path"
+        const val COLUMN_WATCHED = "watched"
 
         private const val CREATE_TABLE_FAVORITES = """
            CREATE TABLE $TABLE_FAVORITES (
                $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
                $COLUMN_MOVIE_ID INTEGER NOT NULL,
-               $COLUMN_TITLE TEXT NOT NULL
+               $COLUMN_TITLE TEXT NOT NULL,
+               $COLUMN_POSTER_PATH TEXT,
+               $COLUMN_WATCHED INTEGER DEFAULT 0
            )
         """
     }
@@ -36,21 +40,23 @@ class FavoriteMovieDbHelper(context: Context) : SQLiteOpenHelper(
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_FAVORITES")
-        onCreate(db)
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE $TABLE_FAVORITES ADD COLUMN $COLUMN_POSTER_PATH TEXT")
+            db.execSQL("ALTER TABLE $TABLE_FAVORITES ADD COLUMN $COLUMN_WATCHED INTEGER DEFAULT 0")
+        }
     }
 
-    // Insertar película
     fun insertMovie(movie: FavoriteMovieModel): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_MOVIE_ID, movie.movieId)
             put(COLUMN_TITLE, movie.title)
+            put(COLUMN_POSTER_PATH, movie.posterPath)
+            put(COLUMN_WATCHED, if (movie.watched) 1 else 0)
         }
         return db.insert(TABLE_FAVORITES, null, values)
     }
 
-    // Eliminar película por ID de la base
     fun deleteMovie(id: Long): Int {
         val db = writableDatabase
         return db.delete(
@@ -60,13 +66,25 @@ class FavoriteMovieDbHelper(context: Context) : SQLiteOpenHelper(
         )
     }
 
-    // Obtener todas las películas favoritas
+    fun updateWatchedStatus(id: Long, watched: Boolean): Int {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_WATCHED, if (watched) 1 else 0)
+        }
+        return db.update(
+            TABLE_FAVORITES,
+            values,
+            "$COLUMN_ID = ?",
+            arrayOf(id.toString())
+        )
+    }
+
     fun getAllMovies(): List<FavoriteMovieModel> {
         val movies = mutableListOf<FavoriteMovieModel>()
         val db = readableDatabase
         val cursor: Cursor = db.query(
             TABLE_FAVORITES,
-            arrayOf(COLUMN_ID, COLUMN_MOVIE_ID, COLUMN_TITLE),
+            arrayOf(COLUMN_ID, COLUMN_MOVIE_ID, COLUMN_TITLE, COLUMN_POSTER_PATH, COLUMN_WATCHED),
             null, null, null, null,
             "$COLUMN_TITLE ASC"
         )
@@ -76,14 +94,15 @@ class FavoriteMovieDbHelper(context: Context) : SQLiteOpenHelper(
                 val id = it.getLong(it.getColumnIndexOrThrow(COLUMN_ID))
                 val movieId = it.getInt(it.getColumnIndexOrThrow(COLUMN_MOVIE_ID))
                 val title = it.getString(it.getColumnIndexOrThrow(COLUMN_TITLE))
-                movies.add(FavoriteMovieModel(id, movieId, title))
+                val posterPath = it.getString(it.getColumnIndexOrThrow(COLUMN_POSTER_PATH))
+                val watched = it.getInt(it.getColumnIndexOrThrow(COLUMN_WATCHED)) == 1
+                movies.add(FavoriteMovieModel(id, movieId, title, posterPath, watched))
             }
         }
 
         return movies
     }
 
-    // Buscar película por movieId
     fun isFavorite(movieId: Int): Boolean {
         val db = readableDatabase
         val cursor = db.query(
