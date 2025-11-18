@@ -69,11 +69,12 @@ class MovieDetailViewModel(application: Application) : AndroidViewModel(applicat
                 fav?.let { favoriteRepository.removeFavorite(it.id) }
                 _isFavorite.value = false
             } else {
-                // Agregar a favoritos
+                // Agregar a favoritos CON POSTER PATH
                 favoriteRepository.addFavorite(
                     FavoriteMovieModel(
                         movieId = movie.id,
-                        title = movie.originalTitle ?: movie.title ?: ""
+                        title = movie.originalTitle ?: movie.title ?: "Sin título",
+                        posterPath = movie.posterPath // IMPORTANTE: Guardar el poster
                     )
                 )
                 _isFavorite.value = true

@@ -33,18 +33,16 @@ class FavoritesFragment : Fragment() {
         setupRecyclerView()
         observeViewModel()
 
-        // Cargar favoritos
         viewModel.loadFavorites()
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(requireActivity()).get(FavoritesViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(FavoritesViewModel::class.java)
     }
 
     private fun setupRecyclerView() {
         adapter = FavoritesAdapter(
             onItemClick = { movie ->
-                // Navegar a detalle
                 val intent = Intent(requireContext(), MovieDetailActivity::class.java).apply {
                     putExtra("MOVIE_ID", movie.movieId)
                     putExtra("MOVIE_TITLE", movie.title)
@@ -53,6 +51,9 @@ class FavoritesFragment : Fragment() {
             },
             onRemoveClick = { movie ->
                 viewModel.removeFavorite(movie)
+            },
+            onToggleWatchedClick = { movie ->
+                viewModel.toggleWatchedStatus(movie)
             }
         )
 
@@ -80,7 +81,6 @@ class FavoritesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Recargar favoritos cuando vuelve a la pantalla
         viewModel.loadFavorites()
     }
 

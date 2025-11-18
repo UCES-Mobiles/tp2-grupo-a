@@ -16,6 +16,10 @@ class FavoriteMovieRepository(context: Context) {
         return dbHelper.deleteMovie(id)
     }
 
+    fun updateWatchedStatus(id: Long, watched: Boolean): Int {
+        return dbHelper.updateWatchedStatus(id, watched)
+    }
+
     fun getFavorites(): List<FavoriteMovieModel> {
         return dbHelper.getAllMovies()
     }

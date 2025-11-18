@@ -42,10 +42,20 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             try {
                 repository.removeFavorite(movie.id)
-                // Recargar la lista
                 loadFavorites()
             } catch (e: Exception) {
                 _error.value = "Error eliminando favorito: ${e.message}"
+            }
+        }
+    }
+
+    fun toggleWatchedStatus(movie: FavoriteMovieModel) {
+        viewModelScope.launch {
+            try {
+                repository.updateWatchedStatus(movie.id, !movie.watched)
+                loadFavorites()
+            } catch (e: Exception) {
+                _error.value = "Error actualizando estado: ${e.message}"
             }
         }
     }

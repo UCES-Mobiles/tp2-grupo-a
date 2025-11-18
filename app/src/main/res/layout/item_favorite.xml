@@ -4,16 +4,46 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="12dp"
-    android:background="?android:attr/selectableItemBackground">
+    android:background="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/movieTitle"
+    <ImageView
+        android:id="@+id/moviePoster"
+        android:layout_width="50dp"
+        android:layout_height="75dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_movie_placeholder"
+        android:contentDescription="Poster de película"
+        android:layout_marginEnd="12dp" />
+
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Título de la película"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/movieTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Título de la película"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/movieStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pendiente"
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:padding="4dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/btnRemoveFavorite"
